@@ -37,14 +37,15 @@ class ProductosController extends Controller
             'nombre'        => 'required|string',
             'categories_id' => 'required|exists:categories,id',
             'modelo'        => 'required',
-            'marca'         => 'required|string',
+            'marca'         => 'nullable|string',
             'precio'        => 'required|numeric|min:0',
             'clave'         => 'required|string',
             'descripcion'   => 'nullable|string', // Opcional
             'imagen'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Opcional
             'disponible'    => 'required|integer|min:0',
             'ubicacion'     => 'nullable|string|max:100',
-            'anio'          => 'nullable|string|max:45', // NUEVO CAMPO
+            'anio'          => 'nullable|string|max:45',
+            'clave_proveedor' => 'nullable|string|max:100',
         ]);
 
         $imagePath = null;
@@ -74,6 +75,7 @@ class ProductosController extends Controller
             'disponible'    => $validatedData['disponible'],
             'ubicacion'     => $validatedData['ubicacion'] ?? null,
             'anio'          => $validatedData['anio'] ?? null,
+            'clave_proveedor' => $validatedData['clave_proveedor'] ?? null,
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Producto creado exitosamente');
@@ -100,14 +102,15 @@ class ProductosController extends Controller
             'nombre'        => 'required|string',
             'categories_id' => 'required|exists:categories,id',
             'modelo'        => 'required',
-            'marca'         => 'required|string',
+            'marca'         => 'nullable|string',
             'precio'        => 'required|numeric|min:0',
             'clave'         => 'required|string',
             'descripcion'   => 'nullable|string',
             'imagen'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'disponible'    => 'required|integer|min:0',
             'ubicacion'     => 'nullable|string|max:100',
-            'anio'          => 'nullable|string|max:45', // NUEVO CAMPO
+            'anio'          => 'nullable|string|max:45',
+            'clave_proveedor' => 'nullable|string|max:100',
         ]);
 
         // --- ACTUALIZACIÓN DE IMAGEN ---

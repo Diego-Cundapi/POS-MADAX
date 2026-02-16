@@ -44,7 +44,7 @@
         @endif
 
         <small class="text-muted mt-2 d-block">
-            <i class="fas fa-info-circle"></i> El Excel debe tener encabezados en la primera fila: <strong>nombre, clave, marca</strong> (obligatorios), <em>precio, stock, modelo, anio, descripcion, ubicacion, clave_proveedor, categoria_id</em> (opcionales).
+            <i class="fas fa-info-circle"></i> El Excel debe tener encabezados en la primera fila: <strong>nombre y clave</strong> (obligatorios), <em>precio,marca, stock, modelo, anio, descripcion, ubicacion, clave_proveedor, categoria_id</em> (opcionales).
         </small>
     </div>
 </div>

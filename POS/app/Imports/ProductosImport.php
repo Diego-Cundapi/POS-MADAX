@@ -15,8 +15,8 @@ class ProductosImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
-        // VALIDACIÓN BÁSICA: Solo Nombre, Clave y Marca son obligatorios
-        if (!isset($row['nombre']) || !isset($row['clave']) || !isset($row['marca'])) {
+        // VALIDACIÓN BÁSICA: Solo Nombre, Clave son obligatorios
+        if (!isset($row['nombre']) || !isset($row['clave'])) {
             return null;
         }
 
@@ -24,7 +24,7 @@ class ProductosImport implements ToModel, WithHeadingRow
             // OBLIGATORIOS
             'clave'         => $row['clave'], 
             'nombre'        => $row['nombre'],
-            'marca'         => $row['marca'], 
+            'marca'         => $row['marca'] ?? null, 
             
             // OPCIONALES CON VALOR POR DEFECTO
             'precio'        => $row['precio'] ?? 0, 
