@@ -36,7 +36,7 @@ class UserController extends Controller
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => strtolower($request->email),
             'password' => Hash::make($request->password),
         ]);
 
@@ -66,7 +66,7 @@ class UserController extends Controller
         ]);
 
         $user->name = $request->name;
-        $user->email = $request->email;
+        $user->email = strtolower($request->email);
         
         // Solo actualizamos password si se envía
         if($request->filled('password')){
