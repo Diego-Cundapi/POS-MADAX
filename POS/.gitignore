@@ -1,0 +1,71 @@
+# ==============================
+# Laravel .gitignore
+# ==============================
+
+# Dependencias
+/node_modules
+/vendor
+
+# Build
+/dist
+/public/build
+/public/hot
+
+# Archivos de entorno
+.env
+.env.backup
+.env.production
+
+# Cache y logs de Laravel
+/storage/*.key
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+!/storage/framework/cache/.gitkeep
+!/storage/framework/sessions/.gitkeep
+!/storage/framework/views/.gitkeep
+!/storage/logs/.gitkeep
+
+# Cache de configuración y rutas
+/bootstrap/cache/*.php
+
+# Archivos de caché de PHP
+*.phpunit.result.cache
+.phpunit.cache
+
+# Archivos de IDE y editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.buildpath
+nbproject/
+
+# Archivos del sistema operativo
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Lock files de Composer (opcional, descomenta si no lo quieres)
+# composer.lock
+
+# Archivos de debug
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Homestead / Vagrant
+Homestead.yaml
+Homestead.json
+/.vagrant
+
+# SQLite databases
+*.sqlite
+*.sqlite-journal
+
+# PHPUnit
+.phpunit.result.cache
