@@ -28,10 +28,18 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $user = Auth::user();
         $request->session()->regenerate();
-        if ($user->hasRole('admin')) {
+
+        // Admin → Tablero CRM
+        if ($user->hasRole('Admin')) {
             return redirect()->route('tablero');
         }
 
+        // Empleado → Dashboard Inventario
+        if ($user->hasRole('Empleado')) {
+            return redirect()->route('dashboard');
+        }
+
+        // Cliente u otro → Tienda pública
         return redirect()->route('index');
     }
 

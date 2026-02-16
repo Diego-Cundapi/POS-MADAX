@@ -66,6 +66,14 @@ Homestead.json
 # SQLite databases
 *.sqlite
 *.sqlite-journal
+*.sqlite-wal
 
 # PHPUnit
 .phpunit.result.cache
+
+# DebugBar
+/storage/debugbar/
+
+# Archivos temporales de diagnóstico
+check_roles.php
+check_output.txt

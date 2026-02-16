@@ -13,15 +13,12 @@ class NativeAppServiceProvider implements ProvidesPhpIni
      */
     public function boot(): void
     {
-        // 1. Lógica de "Seed" Manual para Producción (Sin validación de Faker/Dev dependencies)
-        // 1. Lógica de "Seed" Manual para Producción (Sin validación de Faker/Dev dependencies)
         try {
             // FORZAR MIGRACIÓN AL INICIO (Vital para producción)
             \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
             
-            if (\Illuminate\Support\Facades\Schema::hasTable('users') && \App\Models\User::count() === 0) {
-                
-                // A) Crear Permisos
+            // A) Crear Permisos (SIEMPRE - firstOrCreate es idempotente)
+            if (\Illuminate\Support\Facades\Schema::hasTable('permissions')) {
                 $perms = [
                     'ver_inventario', 
                     'gestionar_ventas', 
@@ -34,7 +31,7 @@ class NativeAppServiceProvider implements ProvidesPhpIni
                     \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $permName, 'guard_name' => 'web']);
                 }
 
-                // B) Crear Roles
+                // B) Crear Roles (SIEMPRE - firstOrCreate es idempotente)
                 $roleAdmin = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
                 $roleAdmin->syncPermissions(\Spatie\Permission\Models\Permission::all());
 
@@ -47,16 +44,19 @@ class NativeAppServiceProvider implements ProvidesPhpIni
 
                 \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Cliente', 'guard_name' => 'web']);
 
-                // C) Crear Usuario Admin
+                // Limpiar caché de permisos
+                app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+            }
+
+            // C) Crear Usuario Admin SOLO si no hay usuarios
+            if (\Illuminate\Support\Facades\Schema::hasTable('users') && \App\Models\User::count() === 0) {
                 $user = \App\Models\User::create([
                     'name' => 'prueba',
                     'email' => 'i@prueba.com',
                     'password' => \Illuminate\Support\Facades\Hash::make('password'),
                     'email_verified_at' => now(),
                 ]);
-
-                // D) Asignar Rol
-                $user->assignRole($roleAdmin);
+                $user->assignRole('Admin');
             }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('NativeBoot Error: ' . $e->getMessage());

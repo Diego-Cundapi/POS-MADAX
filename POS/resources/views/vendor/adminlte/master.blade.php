@@ -7,20 +7,41 @@
     <script>
     (function() {
         'use strict';
-        // Crear namespace Livewire inmediatamente
-        if (!window.Livewire) window.Livewire = {};
-        
-        // Crear función dispatch ANTES de que NativePHP la llame
-        window.Livewire.dispatch = function(event, detail) {
-            // Si livewire v2 está listo, redirigir
-            if (window.livewire && typeof window.livewire.emit === 'function') {
-                return window.livewire.emit(event, detail);
+
+        // Función que inyecta dispatch en cualquier objeto Livewire
+        function injectDispatch(obj) {
+            if (obj && typeof obj.dispatch !== 'function') {
+                obj.dispatch = function(event, detail) {
+                    // Si livewire v2 está listo, redirigir a emit
+                    if (window.livewire && typeof window.livewire.emit === 'function') {
+                        return window.livewire.emit(event, detail);
+                    }
+                    // Si no está listo, encolar
+                    if (!window.__lwQueue) window.__lwQueue = [];
+                    window.__lwQueue.push({ event: event, detail: detail });
+                };
             }
-            // Si no está listo, encolar
-            if (!window.__lwQueue) window.__lwQueue = [];
-            window.__lwQueue.push({ event: event, detail: detail });
-        };
+            return obj;
+        }
+
+        // Crear objeto inicial
+        var _lw = injectDispatch({});
         
+        // Usar defineProperty para interceptar cuando Livewire v2 sobrescribe window.Livewire
+        try {
+            Object.defineProperty(window, 'Livewire', {
+                get: function() { return _lw; },
+                set: function(newVal) {
+                    _lw = injectDispatch(newVal || {});
+                },
+                configurable: true,
+                enumerable: true
+            });
+        } catch(e) {
+            // Fallback si defineProperty falla
+            window.Livewire = _lw;
+        }
+
         // Procesar cola cuando livewire esté listo
         document.addEventListener('livewire:load', function() {
             if (window.__lwQueue && window.livewire) {

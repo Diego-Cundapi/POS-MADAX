@@ -2,6 +2,39 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
+    {{-- 🔧 POLYFILL NATIVEPHP + LIVEWIRE V2 🔧 --}}
+    <script>
+    (function() {
+        'use strict';
+        function injectDispatch(obj) {
+            if (obj && typeof obj.dispatch !== 'function') {
+                obj.dispatch = function(event, detail) {
+                    if (window.livewire && typeof window.livewire.emit === 'function') {
+                        return window.livewire.emit(event, detail);
+                    }
+                    if (!window.__lwQueue) window.__lwQueue = [];
+                    window.__lwQueue.push({ event: event, detail: detail });
+                };
+            }
+            return obj;
+        }
+        var _lw = injectDispatch({});
+        try {
+            Object.defineProperty(window, 'Livewire', {
+                get: function() { return _lw; },
+                set: function(newVal) { _lw = injectDispatch(newVal || {}); },
+                configurable: true, enumerable: true
+            });
+        } catch(e) { window.Livewire = _lw; }
+        document.addEventListener('livewire:load', function() {
+            if (window.__lwQueue && window.livewire) {
+                window.__lwQueue.forEach(function(item) { window.livewire.emit(item.event, item.detail); });
+                window.__lwQueue = [];
+            }
+        });
+    })();
+    </script>
+    {{-- 🔧 FIN POLYFILL 🔧 --}}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">

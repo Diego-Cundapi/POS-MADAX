@@ -24,23 +24,45 @@ class UserController extends Controller
         return view('usuarios.create', compact('roles'));
     }
 
-    // Guardar nuevo usuario
+    // Guardar nuevo usuario (o restaurar uno eliminado previamente)
     public function store(Request $request)
     {
+        // Verificar si existe un usuario soft-deleted con ese email
+        $trashedUser = User::onlyTrashed()
+            ->where('email', strtolower($request->email))
+            ->first();
+
+        // Validar: la regla unique excluye soft-deleted (whereNull deleted_at)
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'email' => [
+                'required',
+                'email',
+                \Illuminate\Validation\Rule::unique('users', 'email')->whereNull('deleted_at'),
+            ],
             'password' => 'required|min:6',
             'role' => 'required'
         ]);
 
+        if ($trashedUser) {
+            // Restaurar el usuario eliminado y actualizar sus datos
+            $trashedUser->restore();
+            $trashedUser->update([
+                'name' => $request->name,
+                'password' => Hash::make($request->password),
+            ]);
+            $trashedUser->syncRoles([$request->role]);
+
+            return redirect()->route('usuarios.index')->with('success', 'Usuario restaurado y actualizado correctamente.');
+        }
+
+        // Crear usuario nuevo
         $user = User::create([
             'name' => $request->name,
             'email' => strtolower($request->email),
             'password' => Hash::make($request->password),
         ]);
 
-        // Asignar rol seleccionado
         $user->assignRole($request->role);
 
         return redirect()->route('usuarios.index')->with('success', 'Usuario creado correctamente.');
