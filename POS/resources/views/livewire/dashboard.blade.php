@@ -189,6 +189,7 @@
                             <a href="{{ route('productos.edit', $producto->id) }}" class="btn btn-info" title="Editar">
                                 <i class="fas fa-edit"></i> Editar
                             </a>
+                            @role('Admin')
                             <form action="{{ route('productos.destroy', $producto->id) }}" method="POST" class="d-inline ml-2">
                                 @csrf
                                 @method('DELETE')
@@ -196,6 +197,7 @@
                                     <i class="fas fa-trash"></i> Eliminar
                                 </button>
                             </form>
+                            @endrole
                         </div>
                     </td>
                 </tr>

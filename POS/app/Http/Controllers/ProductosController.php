@@ -141,6 +141,11 @@ class ProductosController extends Controller
      */
     public function destroy($id)
     {
+        // Solo Admin puede eliminar productos
+        if (!auth()->user()->hasRole('Admin')) {
+            abort(403, 'No tienes permiso para eliminar productos.');
+        }
+
         $producto = Producto::findOrFail($id);
 
         // --- BORRADO DE IMAGEN ---

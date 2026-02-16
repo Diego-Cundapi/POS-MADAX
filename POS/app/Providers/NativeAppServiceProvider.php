@@ -38,7 +38,13 @@ class NativeAppServiceProvider implements ProvidesPhpIni
                 $roleAdmin = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Admin', 'guard_name' => 'web']);
                 $roleAdmin->syncPermissions(\Spatie\Permission\Models\Permission::all());
 
-                \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Empleado', 'guard_name' => 'web']);
+                $roleEmpleado = \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Empleado', 'guard_name' => 'web']);
+                $roleEmpleado->syncPermissions([
+                    'ver_inventario',
+                    'gestionar_ventas',
+                    'gestionar_cotizaciones',
+                ]);
+
                 \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Cliente', 'guard_name' => 'web']);
 
                 // C) Crear Usuario Admin
