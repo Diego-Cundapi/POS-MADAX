@@ -18,6 +18,7 @@ class Producto extends Model
         'anio', // NUEVO CAMPO
         'marca',
         'precio',
+        'costo',
         'clave',
         'clave_proveedor', // NUEVO CAMPO
         'descripcion',

@@ -21,13 +21,13 @@
             </div>
             <div class="shadow-md rounded-lg p-6" style="background-color: #DCFCE7">
                 <div class="flex justify-between items-center mb-2">
-                    <h1 class="text-lg text-bold">Nuevos Clientes</h1>
-                    <i class="fas fa-user-plus text-xl text-bold"></i>
+                    <h1 class="text-lg text-bold">Ganancias</h1>
+                    <i class="fas fa-sack-dollar text-xl text-bold"></i>
                 </div>
-                <p class="text-4xl text-black text-bold mb-1">{{$nuevosClientes}}</p>
+                <p class="text-4xl text-black text-bold mb-1">${{$ganancias}}</p>
                 <div class="flex items-center gap-2">
-                    <p class="text-sm text-green-900 text-bold">%{{$crecimientoClientes}}</p>
-                    <p class="text-sm text-green-900"> de crecimiento de Clientes</p>
+                    <p class="text-sm text-green-900 text-bold">%{{$crecimientoGanancias}}</p>
+                    <p class="text-sm text-green-900"> de crecimiento de Ganancias</p>
                 </div>
             </div>
             <div class="shadow-md rounded-lg p-6" style="background-color: #FEF9C2">

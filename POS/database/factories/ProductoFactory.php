@@ -24,6 +24,7 @@ class ProductoFactory extends Factory
             'marca' =>  fake()->word(),
             'clave' =>  fake()->word(),
             'precio' =>  fake()->randomFloat(2, 0, 9999),
+            'costo' =>  fake()->randomFloat(2, 0, 100),
             'disponible' =>  fake()->numberBetween(0, 100),
             'imagen' =>  fake()->imageUrl(),
         ];

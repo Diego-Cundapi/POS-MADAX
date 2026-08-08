@@ -101,9 +101,9 @@
                         {{-- COLUMNA DERECHA --}}
                         <div class="col-md-6">
 
-                            {{-- Precio y Disponible (En una misma fila) --}}
+                            {{-- Precio, Costo y Disponible (En una misma fila) --}}
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-4">
                                     <div class="form-group">
                                         <label for="precio">Precio ($) <span class="text-danger">*</span></label>
                                         <div class="input-group">
@@ -116,7 +116,20 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label for="costo">Costo ($)</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>
+                                            <input type="number" step="0.01" name="costo" class="form-control @error('costo') is-invalid @enderror"
+                                                value="{{ old('costo') }}" placeholder="0.00">
+                                            @error('costo') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
                                     <div class="form-group">
                                         <label for="disponible">Stock Disponible</label>
                                         <input type="number" name="disponible" class="form-control @error('disponible') is-invalid @enderror"

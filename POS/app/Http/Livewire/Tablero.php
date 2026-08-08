@@ -3,15 +3,14 @@
 namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Pedido;
-use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class Tablero extends Component
 {
     public $ventas = 0;
-    public $nuevosClientes = 0;
-    public $crecimientoClientes = 0;
+    public $ganancias = 0;
+    public $crecimientoGanancias = 0;
     public $productosVendidos = 0;
     public $crecimientoProductos = 0;
     public $ventasUltimos6Meses = [];
@@ -25,21 +24,28 @@ class Tablero extends Component
             ->whereMonth('fechapedido', Carbon::now()->month)
             ->sum(DB::raw('subtotal + impuesto'));
 
-        // Calcular el número de nuevos clientes del mes actual
-        $this->nuevosClientes = User::whereYear('created_at', Carbon::now()->year)
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->count();
+        // Calcular las ganancias netas del mes actual: (precio_venta - costo) * cantidad por cada linea de detalle
+        // Si el producto no tiene costo definido, se trata como 0 (se cuenta el precio de venta completo)
+        $this->ganancias = DB::table('detalles')
+            ->join('pedidos', 'pedidos.id', '=', 'detalles.pedido_id')
+            ->join('productos', 'productos.id', '=', 'detalles.producto_id')
+            ->whereYear('pedidos.fechapedido', Carbon::now()->year)
+            ->whereMonth('pedidos.fechapedido', Carbon::now()->month)
+            ->sum(DB::raw('(detalles.precio - COALESCE(productos.costo, 0)) * detalles.cantidad'));
 
-        // Calcular el número de clientes del mes anterior
-        $clientesMesAnterior = User::whereYear('created_at', Carbon::now()->year)
-            ->whereMonth('created_at', Carbon::now()->subMonth()->month)
-            ->count();
+        // Calcular las ganancias netas del mes anterior
+        $gananciasMesAnterior = DB::table('detalles')
+            ->join('pedidos', 'pedidos.id', '=', 'detalles.pedido_id')
+            ->join('productos', 'productos.id', '=', 'detalles.producto_id')
+            ->whereYear('pedidos.fechapedido', Carbon::now()->year)
+            ->whereMonth('pedidos.fechapedido', Carbon::now()->subMonth()->month)
+            ->sum(DB::raw('(detalles.precio - COALESCE(productos.costo, 0)) * detalles.cantidad'));
 
-        // Calcular el porcentaje de crecimiento o decremento de clientes
-        if ($clientesMesAnterior > 0) {
-            $this->crecimientoClientes = (($this->nuevosClientes - $clientesMesAnterior) / $clientesMesAnterior) * 100;
+        // Calcular el porcentaje de crecimiento o decremento de ganancias
+        if ($gananciasMesAnterior > 0) {
+            $this->crecimientoGanancias = (($this->ganancias - $gananciasMesAnterior) / $gananciasMesAnterior) * 100;
         } else {
-            $this->crecimientoClientes = $this->nuevosClientes > 0 ? (($this->nuevosClientes - $clientesMesAnterior) / 1) * 100 : 0;
+            $this->crecimientoGanancias = $this->ganancias > 0 ? (($this->ganancias - $gananciasMesAnterior) / 1) * 100 : 0;
         }
 
         // Calcular la cantidad de productos vendidos en el mes actual
@@ -84,8 +90,8 @@ class Tablero extends Component
 
         return view('livewire.tablero', [
             'ventas' => $this->ventas,
-            'nuevosClientes' => $this->nuevosClientes,
-            'crecimientoClientes' => $this->crecimientoClientes,
+            'ganancias' => $this->ganancias,
+            'crecimientoGanancias' => $this->crecimientoGanancias,
             'productosVendidos' => $this->productosVendidos,
             'crecimientoProductos' => $this->crecimientoProductos,
             'ventasUltimos6Meses' => $this->crecimientoProductos,

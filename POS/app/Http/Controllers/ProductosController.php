@@ -39,6 +39,7 @@ class ProductosController extends Controller
             'modelo'        => 'required',
             'marca'         => 'nullable|string',
             'precio'        => 'required|numeric|min:0',
+            'costo'         => 'nullable|numeric|min:0',
             'clave'         => 'required|string',
             'descripcion'   => 'nullable|string', // Opcional
             'imagen'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Opcional
@@ -69,6 +70,7 @@ class ProductosController extends Controller
             'modelo'        => $validatedData['modelo'],
             'marca'         => $validatedData['marca'],
             'precio'        => $validatedData['precio'],
+            'costo'         => $validatedData['costo'] ?? null,
             'clave'         => $validatedData['clave'],
             'descripcion'   => $validatedData['descripcion'] ?? null,
             'imagen'        => $imagePath,
@@ -104,6 +106,7 @@ class ProductosController extends Controller
             'modelo'        => 'required',
             'marca'         => 'nullable|string',
             'precio'        => 'required|numeric|min:0',
+            'costo'         => 'nullable|numeric|min:0',
             'clave'         => 'required|string',
             'descripcion'   => 'nullable|string',
             'imagen'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',

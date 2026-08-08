@@ -4,11 +4,25 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ProfileTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // La app requiere estar "activada" (ver CheckAppActivation) para acceder a cualquier ruta.
+        DB::table('app_settings')->insert([
+            'key' => 'app_activated',
+            'value' => 'true',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
 
     public function test_profile_page_is_displayed(): void
     {
