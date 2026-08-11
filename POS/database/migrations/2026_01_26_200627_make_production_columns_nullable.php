@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // SQLite reconstruye la tabla completa para aplicar ->change() (no soporta
+        // ALTER COLUMN nativo). Sin desactivar las FK, esa reconstrucción falla
+        // (DROP TABLE productos) en cuanto detalles/cotizaciones ya tienen filas
+        // que referencian productos.
+        Schema::disableForeignKeyConstraints();
+
         Schema::table('productos', function (Blueprint $table) {
             // Hacemos nulos los campos que no sean clave, marca o nombre
             $table->unsignedBigInteger('categories_id')->nullable()->change();
@@ -19,6 +25,8 @@ return new class extends Migration
             $table->decimal('precio', 8, 2)->default(0)->change(); // Precio puede ser 0 por defecto
             $table->integer('disponible')->default(0)->change();   // Stock puede ser 0 por defecto
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
